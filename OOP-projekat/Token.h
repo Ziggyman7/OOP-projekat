@@ -9,6 +9,7 @@ private:
 	int creatorFunct_;
 	string name_;
 	friend class ArithmeticOperation;
+	friend class Machine;
 public:
 	Token(string name, double val, int creator);
 	Token(string name, int creator);
