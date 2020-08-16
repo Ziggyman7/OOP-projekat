@@ -6,8 +6,6 @@ enum CompilationType {
 	SIMPLE, ADVANCED
 };
 
-
-
 class Compiler {
 public:
 	void compile(const string& fileIn, CompilationType compilationType);
