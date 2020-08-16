@@ -23,8 +23,8 @@ private:
 	void moveToCompleted(int opNumber);
 	void readIMF(string fileName);									//
 	void readConfig();												//
+	void writeToLog(string fileName, int operationNumber, int lag); //
 	void writeToMem(string fileName);
-	void writeToLog(string fileName, int operationNumber, int lag);
 	void checkIfReady(ArithmeticOperation operationToBeChecked);	//
 	void checkAllIfReady();											//
 	void checkIfFinished(ArithmeticOperation operationToBeChecked);	//

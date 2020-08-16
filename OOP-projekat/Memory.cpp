@@ -2,6 +2,8 @@
 #include "Exceptions.h"
 using namespace std;
 
+Memory* Memory::instance_ = nullptr;
+
 Memory* Memory::getInstance(){
 	if (instance_ == nullptr) {
 		instance_ = new Memory();

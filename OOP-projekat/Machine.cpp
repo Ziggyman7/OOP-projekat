@@ -2,6 +2,8 @@
 #include <fstream>
 using namespace std;
 
+Machine* Machine::instance_ = nullptr;
+
 Machine* Machine::getInstance() {
 	if (instance_ == nullptr)
 		instance_ = new Machine();
@@ -9,10 +11,14 @@ Machine* Machine::getInstance() {
 }
 
 void Machine::exec(string fileName) {
+	readConfig();
 	readIMF(fileName);
 	fileName_ = fileName;
 	timeCounter = 0;
-	readConfig();
+	
+	fstream output(fileName + ".log", ios::out);
+	output.flush();
+	output.close();
 	while (!(waiting_.empty() && executing_.empty())) {
 		checkAllIfReady();
 		checkAllIfFinished();
@@ -28,7 +34,7 @@ void Machine::readConfig() {
 	int value;
 	while (getline(inputfile, line)) {
 		variable = line[0] + line[1];
-		switch (line.length) {
+		switch (line.length()) {
 		case 6: {
 			value = line[6];
 			break; }
@@ -38,7 +44,9 @@ void Machine::readConfig() {
 		case 8: {
 			value = line[6] + line[7] + line[8];
 			break; }
-		case 15: cType_= SIMPLE;
+		case 15: {
+			cType_ = SIMPLE;
+			break; }
 		default: cType_ = ADVANCED;
 		}
 		if (variable == "Ta") { Ta_ = value; }
@@ -69,6 +77,22 @@ void Machine::readIMF(string fileName) {
 
 		opType = line[i];
 		i = i + 2;
+
+		switch (opType)
+		{
+		case '=': {
+			opLat = Tw_;
+			break; }
+		case '+': {
+			opLat = Ta_;
+			break; }
+		case '*': {
+			opLat = Tm_;
+			break; }
+		case '^': {
+			opLat = Te_;
+			break; }
+		}
 
 		while (line[i] != ' ') {
 			tokenName.push_back(line[i]);
@@ -139,4 +163,10 @@ void Machine::checkIfReady(ArithmeticOperation operationBeingChecked) {
 
 void Machine::checkIfFinished(ArithmeticOperation operationBeingChecked) {
 	if (timeCounter >= operationBeingChecked.timeOfStart_ + operationBeingChecked.latency_) moveToCompleted(operationBeingChecked.operationID_);
+}
+
+void Machine::writeToLog(string fileName, int ID, int lag) {
+	fstream outputfile(fileName + ".log", ios::app);
+	outputfile << "[" << ID << "]\t(" << timeCounter << "-" << timeCounter + lag << ")ns\n";
+	outputfile.close();
 }
