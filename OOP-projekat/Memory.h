@@ -22,6 +22,7 @@ public:
 	vector<MemElem> getAll();
 	static Memory* getInstance();
 	friend class ArithmeticOperation;
+	void writeMem(string fileName);
 private:
 	vector<MemElem> theMemory_;
 	Memory() {};

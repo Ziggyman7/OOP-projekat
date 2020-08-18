@@ -1,5 +1,6 @@
 #include "Memory.h"
 #include "Exceptions.h"
+#include <fstream>
 using namespace std;
 
 Memory* Memory::instance_ = nullptr;
@@ -38,3 +39,9 @@ vector<MemElem> Memory::getAll() {
 	return theMemory_;
 }
 
+void Memory::writeMem(string fileName) {
+	fstream outputFile(fileName + ".mem", ios::out);
+	for (auto& n : theMemory_) {
+		outputFile << n.elemName_ << " = " << n.elemVal_ << "\n";
+	}
+}

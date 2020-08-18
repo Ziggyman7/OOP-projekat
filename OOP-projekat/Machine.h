@@ -19,8 +19,8 @@ private:
 	string fileName_;
 	int Ta_, Tm_, Te_, Tw_, Nw_;
 	CompilationType cType_;
-	void moveToExecuting(int opNumber);
-	void moveToCompleted(int opNumber);
+	void moveToExecuting(int opNumber);								//
+	void moveToCompleted(int opNumber);								//
 	void readIMF(string fileName);									//
 	void readConfig();												//
 	void writeToLog(string fileName, int operationNumber, int lag); //
