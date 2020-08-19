@@ -28,6 +28,7 @@ public:
 	void execute();
 	ArithmeticOperation(int id, int lat, vector<Token*> tokens, char type) : Operation(id, lat, tokens) { type_ = type; }
 	void addTimeOfStart(int time);
+	friend class Machine;
 private:
 	char type_;
 };

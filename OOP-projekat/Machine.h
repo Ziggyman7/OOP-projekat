@@ -15,7 +15,7 @@ private:
 	vector<ArithmeticOperation> executing_;
 	vector<ArithmeticOperation> completed_;
 	vector<Token> allTokens_;
-	int timeCounter;
+	int timeCounter_;
 	string fileName_;
 	int Ta_, Tm_, Te_, Tw_, Nw_;
 	CompilationType cType_;
@@ -23,10 +23,10 @@ private:
 	void moveToCompleted(int opNumber);								//
 	void readIMF(string fileName);									//
 	void readConfig();												//
-	void writeToLog(string fileName, int operationNumber, int lag); //
+	void writeToLog(string &fileName, int operationNumber, int lag); //
 	void writeToMem(string fileName);
-	void checkIfReady(ArithmeticOperation operationToBeChecked);	//
+	bool checkIfReady(ArithmeticOperation &operationToBeChecked);	//
 	void checkAllIfReady();											//
-	void checkIfFinished(ArithmeticOperation operationToBeChecked);	//
+	bool checkIfFinished(ArithmeticOperation &operationToBeChecked);	//
 	void checkAllIfFinished();										//
 };			
