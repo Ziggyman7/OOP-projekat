@@ -44,4 +44,5 @@ void Memory::writeMem(string fileName) {
 	for (auto& n : theMemory_) {
 		outputFile << n.elemName_ << " = " << n.elemVal_ << "\n";
 	}
+	outputFile.close();
 }

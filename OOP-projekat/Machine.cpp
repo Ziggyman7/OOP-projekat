@@ -20,15 +20,16 @@ void Machine::exec(string fileName) {
 		cout << "\n";
 
 	}
-	
+	for (auto&n : allTokens_) cout << n->name_ << ":" << n->val_ << ":" << n->creatorFunct_<<"\n";
 	fstream output(fileName + ".log", ios::out);
 	output.flush();
 	output.close();
 	timeCounter_ = 0;
+	numberOfAssingments_ = 0;
 	while (!(waiting_.empty() && executing_.empty())) {
 		checkAllIfReady();
 		checkAllIfFinished();
-		cout<<"Time:"<<timeCounter_++<<"\n";
+		cout<<"Time:"<<timeCounter_++<</*" "<< jebeno->operationID_ <<*/"\n";
 		for (auto &n : waiting_) {
 			cout << "operation in waiting number " << n.operationID_ << " : " << "operation type " << n.type_ << " : " << "operation latency " << n.latency_ << " : " << "result = " << n.ports_[0]->val_;
 			cout << "\n";
@@ -42,7 +43,7 @@ void Machine::exec(string fileName) {
 		cout << "\n";
 
 		for (auto &n : completed_) {
-			cout << "operation in completed number " << n.operationID_ << " : " << "operation type " << n.type_ << " : " << "operation latency " << n.latency_ << " : " << "result = " <<n.ports_[0]->val_;
+			cout << "operation in completed number " << n.operationID_ << " : " << "operation type " << n.type_ << " : " << "operation latency " << n.latency_ << " : " << "result = " << n.ports_[0]->val_;
 			cout << "\n";
 		}
 		cout << "\n";
@@ -50,12 +51,9 @@ void Machine::exec(string fileName) {
 	}
 	writeToMem(fileName);
 
-	for (int i = 0; i < waiting_.size(); i++) {
-		for (int j = 0; j < waiting_[i].ports_.size(); i++) {
-			delete waiting_[i].ports_[j];
-		}
+	for (int i = 0; i < allTokens_.size(); i++) {
+		delete allTokens_[i];
 	}
-	output.close();
 }
 
 void Machine::readConfig() {
@@ -132,8 +130,8 @@ void Machine::readIMF(string fileName) {
 			tokenName.push_back(line[i]);
 			i++;
 		}
-		allTokens_.push_back(Token(tokenName, opNum));
-		tokensForOp.push_back(new Token(allTokens_.back()));
+		allTokens_.push_back(new Token(tokenName, opNum));
+		tokensForOp.push_back(allTokens_.back());
 		i++;
 		while (i < line.length()) {
 			tokenName = "";
@@ -142,14 +140,14 @@ void Machine::readIMF(string fileName) {
 				i++;
 			}
 			i++;
-			if ((tokenName[0] <= '9') && (tokenName[0] >= '0')) {
-				allTokens_.push_back(Token(tokenName,stoi(tokenName), opNum));
-				tokensForOp.push_back(new Token(allTokens_.back()));
+			if (((tokenName[0] <= '9') && (tokenName[0] >= '0'))||tokenName[0]=='-') {
+				allTokens_.push_back(new Token(tokenName,stod(tokenName), opNum));
+				tokensForOp.push_back(allTokens_.back());
 			}
 			else {
 				for (auto& n : allTokens_) {
-					if (n.name_ == tokenName) {
-						tokensForOp.push_back(new Token (n));
+					if (n->name_ == tokenName) {
+						tokensForOp.push_back(n);
 						break;
 					}
 				}
@@ -157,7 +155,7 @@ void Machine::readIMF(string fileName) {
 			
 		}
 		waiting_.push_back(ArithmeticOperation(opNum, opLat, tokensForOp, opType));
-		
+		if (opNum == 5) jebeno = &(waiting_.back());
 	}
 	inputFile.close();
 	
@@ -175,7 +173,7 @@ void Machine::checkAllIfFinished() {
 	}
 }
 
-bool Machine::checkIfReady(ArithmeticOperation &operationBeingChecked) {
+bool Machine::checkIfReady(ArithmeticOperation operationBeingChecked) {
 	bool tokenReady;
 	int creator;
 	for (int i = 0; i < operationBeingChecked.ports_.size();i++) {
@@ -190,15 +188,16 @@ bool Machine::checkIfReady(ArithmeticOperation &operationBeingChecked) {
 		if (creator == operationBeingChecked.operationID_) tokenReady = 1;
 		if (!tokenReady) return tokenReady;
 	}
-	operationBeingChecked.execute();
-	operationBeingChecked.addTimeOfStart(timeCounter_);
+	if ((operationBeingChecked.type_ == '=') && numberOfAssingments_ >= Nw_) return 0;
 	moveToExecuting(operationBeingChecked.operationID_);
+	if (operationBeingChecked.type_ == '=') numberOfAssingments_++;
 	writeToLog(fileName_, operationBeingChecked.operationID_, operationBeingChecked.latency_);
 	return tokenReady;
 }
 
 bool Machine::checkIfFinished(ArithmeticOperation &operationBeingChecked) {
-	if (timeCounter_ >= (operationBeingChecked.timeOfStart_ + operationBeingChecked.latency_)) {
+	if (timeCounter_ >= (operationBeingChecked.timeOfStart_ + operationBeingChecked.latency_ - 1)) {
+		if (operationBeingChecked.type_ == '=') numberOfAssingments_--;
 		moveToCompleted(operationBeingChecked.operationID_);
 		return 1;
 	}
@@ -213,15 +212,16 @@ void Machine::writeToLog(string& fileName, int ID, int lag) {
 
 void Machine::moveToExecuting(int opNum) {
 	ArithmeticOperation helper = waiting_[0];
-	for (int i = 0; i < waiting_.size();i++) {
+	for (int i = 0; i < waiting_.size(); i++) {
 		if (waiting_[i].operationID_ == opNum) {
 			helper = waiting_[i];
 			waiting_.erase(waiting_.begin()+i);
 			break;
 		}
 	}
+	helper.execute();
+	helper.addTimeOfStart(timeCounter_);
 	executing_.push_back(helper);
-	
 }
 
 void Machine::moveToCompleted(int opNum) {

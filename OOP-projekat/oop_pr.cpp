@@ -7,10 +7,11 @@ using namespace std;
 
 int main() {
 	string nameOfFile;
+	cout << "Unesite ime fajla programa.";
 	cin >> nameOfFile;
 	Compiler::getInstance()->compile(nameOfFile, CompilationType::SIMPLE);
 	Machine::getInstance()->exec(nameOfFile);
 	char a;
-	cout << "Pritisnite bilo koje dugme za kraj.";
+	cout << "Unesite bilo sta za izlazak iz programa.";
 	cin >> a;
 }

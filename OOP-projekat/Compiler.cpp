@@ -38,14 +38,20 @@ void Compiler::compile(const string& fileIn, CompilationType compilationType) {
 	string postLine;
 	int lineCounter_ = 1;
 	int tCounter_ = 1;
+	int k = 0;
 	string helper1, helper2;
 	stack<string> charStack;
 	while (getline(inputFile, line)) {
 		postLine = toPostfix(line);
+		cout << postLine<<"\n";
+		
 		for (int i = 0; i < postLine.length(); i++) {
 			if (postLine[i] == ' ') continue;
 			if (!isOperator(postLine[i])) {
-				charStack.push(string(1, postLine[i]));
+				k = 0;
+				while (postLine[k+i] != ' ') k++;
+				charStack.push(string(postLine,i,k));
+				i = i + k-1;
 			} else {
 				helper1 = charStack.top();
 				charStack.pop();
@@ -89,7 +95,7 @@ string Compiler::toPostfix(const string& in){
 		else if (in[i] == ' ') continue;
 		else {
 			outLine += in[i];
-			outLine += ' ';
+			if((in[i]!='-')&&(in[i]!='.') && (in[i+1] != '.'))outLine += ' ';
 		}
 
 	}
