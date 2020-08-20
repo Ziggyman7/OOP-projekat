@@ -198,6 +198,8 @@ bool Machine::checkIfReady(ArithmeticOperation operationBeingChecked) {
 bool Machine::checkIfFinished(ArithmeticOperation &operationBeingChecked) {
 	if (timeCounter_ >= (operationBeingChecked.timeOfStart_ + operationBeingChecked.latency_ - 1)) {
 		if (operationBeingChecked.type_ == '=') numberOfAssingments_--;
+		//cout << "operation that just finished number " << operationBeingChecked.operationID_ << " : " << "operation type " << operationBeingChecked.type_ << " : " << "operation latency " << operationBeingChecked.latency_ << " : " << "result = " << operationBeingChecked.ports_[0]->val_<<"\n";
+
 		moveToCompleted(operationBeingChecked.operationID_);
 		return 1;
 	}
@@ -227,7 +229,7 @@ void Machine::moveToExecuting(int opNum) {
 void Machine::moveToCompleted(int opNum) {
 	ArithmeticOperation helper = executing_[0];
 	for (int i = 0; i < executing_.size(); i++) {
-		if (executing_[i].operationID_ = opNum) {
+		if (executing_[i].operationID_ == opNum) {
 			helper = executing_[i];
 			executing_.erase(executing_.begin() + i);
 			break;

@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
 	string nameOfFile;
-	cout << "Unesite ime fajla programa.";
+	cout << "Unesite ime fajla programa.\n";
 	cin >> nameOfFile;
 	Compiler::getInstance()->compile(nameOfFile, CompilationType::SIMPLE);
 	Machine::getInstance()->exec(nameOfFile);
