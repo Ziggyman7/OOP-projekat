@@ -20,7 +20,7 @@ void Machine::exec(string fileName) {
 		cout << "\n";
 
 	}
-	for (auto&n : allTokens_) cout << n->name_ << ":" << n->val_ << ":" << n->creatorFunct_<<"\n";
+	//for (auto&n : allTokens_) cout << n->name_ << ":" << n->val_ << ":" << n->creatorFunct_<<"\n";
 	fstream output(fileName + ".log", ios::out);
 	output.flush();
 	output.close();
@@ -29,8 +29,8 @@ void Machine::exec(string fileName) {
 	while (!(waiting_.empty() && executing_.empty())) {
 		checkAllIfReady();
 		checkAllIfFinished();
-		cout<<"Time:"<<timeCounter_++<</*" "<< jebeno->operationID_ <<*/"\n";
-		for (auto &n : waiting_) {
+		/*cout<<"Time:"<<*/timeCounter_++;// << "\n";
+		/*for (auto &n : waiting_) {
 			cout << "operation in waiting number " << n.operationID_ << " : " << "operation type " << n.type_ << " : " << "operation latency " << n.latency_ << " : " << "result = " << n.ports_[0]->val_;
 			cout << "\n";
 		}
@@ -46,7 +46,7 @@ void Machine::exec(string fileName) {
 			cout << "operation in completed number " << n.operationID_ << " : " << "operation type " << n.type_ << " : " << "operation latency " << n.latency_ << " : " << "result = " << n.ports_[0]->val_;
 			cout << "\n";
 		}
-		cout << "\n";
+		cout << "\n";*/
 
 	}
 	writeToMem(fileName);
@@ -155,7 +155,6 @@ void Machine::readIMF(string fileName) {
 			
 		}
 		waiting_.push_back(ArithmeticOperation(opNum, opLat, tokensForOp, opType));
-		if (opNum == 5) jebeno = &(waiting_.back());
 	}
 	inputFile.close();
 	

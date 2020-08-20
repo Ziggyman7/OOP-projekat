@@ -10,7 +10,6 @@ public:
 	
 private:
 	Machine() {};
-	ArithmeticOperation* jebeno;
 	static Machine* instance_;
 	vector<ArithmeticOperation> waiting_;
 	vector<ArithmeticOperation> executing_;

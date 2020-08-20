@@ -43,7 +43,7 @@ void Compiler::compile(const string& fileIn, CompilationType compilationType) {
 	stack<string> charStack;
 	while (getline(inputFile, line)) {
 		postLine = toPostfix(line);
-		cout << postLine<<"\n";
+		//cout << postLine<<"\n";
 		
 		for (int i = 0; i < postLine.length(); i++) {
 			if (postLine[i] == ' ') continue;
@@ -83,10 +83,12 @@ string Compiler::toPostfix(const string& in){
 				opStack.push(in[i]);
 			}
 			else {
-				while (getPriority(opStack.top()) >= getPriority(in[i])) {
-					outLine += opStack.top();
-					outLine += ' ';
-					opStack.pop();
+				if (!((opStack.top() == '^') && (in[i] == '^'))) {
+					while (getPriority(opStack.top()) >= getPriority(in[i])) {
+						outLine += opStack.top();
+						outLine += ' ';
+						opStack.pop();
+					}
 				}
 				opStack.push(in[i]);
 			}
