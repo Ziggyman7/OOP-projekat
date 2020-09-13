@@ -13,5 +13,5 @@ public:
 private:
 	Compiler() {};
 	static Compiler* instance_;
-	string toPostfix(const string& line);
+	string toPostfix(const string& line, CompilationType type);
 };

@@ -7,6 +7,8 @@ class Machine {
 public:
 	static Machine* getInstance();
 	void exec(string fileName);
+	void readConfig();
+	CompilationType getType() { return cType_; };
 	
 private:
 	Machine() {};
@@ -23,8 +25,8 @@ private:
 	void moveToExecuting(int opNumber);								//
 	void moveToCompleted(int opNumber);								//
 	void readIMF(string fileName);									//
-	void readConfig();												//
-	void writeToLog(string &fileName);//
+												//
+	void writeToLog(string &fileName);								//
 	void writeToMem(string fileName);								//
 	bool checkIfReady(ArithmeticOperation* operationToBeChecked);	//
 	void checkAllIfReady();											//

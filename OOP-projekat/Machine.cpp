@@ -14,7 +14,6 @@ Machine* Machine::getInstance() {
 
 void Machine::exec(string fileName) {
 	fileName_ = fileName;
-	readConfig();	
 	readIMF(fileName);
 	for (auto &n : waiting_) {
 		cout << "operation number " << n->operationID_ << " : " << "operation type " << n->type_ << " : " << "operation latency " << n->latency_ << " : ";
@@ -79,7 +78,9 @@ void Machine::readConfig() {
 		case 20: {
 			cType_ = SIMPLE;
 			break; }
-		default: cType_ = ADVANCED;
+		case 22: {
+			cType_ = ADVANCED;
+			}
 		}
 		if (variable == "Ta") { Ta_ = value; }
 		if (variable == "Tm") { Tm_ = value; }

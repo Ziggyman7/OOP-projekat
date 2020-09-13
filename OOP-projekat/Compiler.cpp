@@ -42,7 +42,7 @@ void Compiler::compile(const string& fileIn, CompilationType compilationType) {
 	string helper1, helper2;
 	stack<string> charStack;
 	while (getline(inputFile, line)) {
-		postLine = toPostfix(line);
+		postLine = toPostfix(line, compilationType);
 		cout << postLine<<"\n";
 		
 		for (int i = 0; i < postLine.length(); i++) {
@@ -71,40 +71,111 @@ void Compiler::compile(const string& fileIn, CompilationType compilationType) {
 	outputFile.close();
 }
 
-string Compiler::toPostfix(const string& in){
-	stack<char> opStack;
-	string outLine;
-	for (int i = 0; i < in.length(); i++) {
-		if (isOperator(in[i])) {
-			if (opStack.empty()) {
-				opStack.push(in[i]);
-			}
-			else if (getPriority(opStack.top()) < getPriority(in[i])) {
-				opStack.push(in[i]);
-			}
-			else {
-				if (!((opStack.top() == '^') && (in[i] == '^'))) {
-					while (getPriority(opStack.top()) >= getPriority(in[i])) {
-						outLine += opStack.top();
-						outLine += ' ';
+
+string Compiler::toPostfix(const string& in, CompilationType cType) {
+	if (cType == ADVANCED) {
+		stack<char> opStack;
+		string outLine;
+		bool repeating = false, repeating2 = false;
+		char charToPrint = ' ';
+		for (int i = 0; i < in.length(); i++) {
+			if (isOperator(in[i])) {
+				if (opStack.empty()) {
+					opStack.push(in[i]);
+				}
+				else if (getPriority(opStack.top()) < getPriority(in[i])) {
+					opStack.push(in[i]);
+					repeating = false;
+					repeating2 = false;
+				}
+				else {
+					if (getPriority(opStack.top()) == getPriority(in[i]) &&
+						(in[i] == '+' || in[i] == '*')) {
+						if (!repeating) {
+							repeating = true;
+						}
+						else {
+							repeating2 = true;
+						}
+					}
+					else {
+						repeating = false;
+						repeating2 = false;
+					}
+
+					if (!repeating2) {
+						if (!((opStack.top() == '^') && (in[i] == '^'))) {
+							while (getPriority(opStack.top()) >= getPriority(in[i])) {
+								outLine += opStack.top();
+								outLine += ' ';
+								opStack.pop();
+							}
+						}
+					}
+					else {
+						charToPrint = opStack.top();
 						opStack.pop();
 					}
+
+					opStack.push(in[i]);
 				}
-				opStack.push(in[i]);
+
+			}
+			else if (in[i] == ' ') continue;
+			else {
+				outLine += in[i];
+				if ((in[i] != '-') && (in[i] != '.') && (in[i + 1] != '.'))outLine += ' ';
+
+				if (charToPrint != ' ') {
+					outLine += charToPrint;
+					outLine += ' ';
+					charToPrint = ' ';
+				}
 			}
 
 		}
-		else if (in[i] == ' ') continue;
-		else {
-			outLine += in[i];
-			if((in[i]!='-')&&(in[i]!='.') && (in[i+1] != '.'))outLine += ' ';
+		while (!opStack.empty()) {
+			outLine += opStack.top();
+			outLine += ' ';
+			opStack.pop();
 		}
+		return outLine;
+	}
+	if (cType == SIMPLE) {
+		stack<char> opStack;
+		string outLine;
+		for (int i = 0; i < in.length(); i++) {
+			if (isOperator(in[i])) {
+				if (opStack.empty()) {
+					opStack.push(in[i]);
+				}
+				else if (getPriority(opStack.top()) < getPriority(in[i])) {
+					opStack.push(in[i]);
+				}
+				else {
+					if (!((opStack.top() == '^') && (in[i] == '^'))) {
+						while (getPriority(opStack.top()) >= getPriority(in[i])) {
+							outLine += opStack.top();
+							outLine += ' ';
+							opStack.pop();
+						}
+					}
+					opStack.push(in[i]);
+				}
 
+			}
+			else if (in[i] == ' ') continue;
+			else {
+				outLine += in[i];
+				if ((in[i] != '-') && (in[i] != '.') && (in[i + 1] != '.'))outLine += ' ';
+			}
+
+		}
+		while (!opStack.empty()) {
+			outLine += opStack.top();
+			outLine += ' ';
+			opStack.pop();
+		}
+		return outLine;
 	}
-	while (!opStack.empty()) {
-		outLine += opStack.top();
-		outLine += ' ';
-		opStack.pop();
-	}
-	return outLine;
 }

@@ -1,7 +1,6 @@
-a = 5
-b = -5
+a = 1
+b = 2
 c = a + b
-d = b * b
-e = 2.5
-f = e^d^c
-g = a + a + a + a + f
+d = c * 2
+e = d^2
+f = 5 + 2 * e^2

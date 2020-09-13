@@ -9,7 +9,8 @@ int main() {
 	string nameOfFile;
 	cout << "Unesite ime fajla programa.\n";
 	cin >> nameOfFile;
-	Compiler::getInstance()->compile(nameOfFile, CompilationType::SIMPLE);
+	Machine::getInstance()->readConfig();
+	Compiler::getInstance()->compile(nameOfFile, Machine::getInstance()->getType());
 	Machine::getInstance()->exec(nameOfFile);
 	char a;
 	cout << "Unesite bilo sta za izlazak iz programa.";
