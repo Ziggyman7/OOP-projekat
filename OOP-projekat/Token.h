@@ -8,7 +8,10 @@ private:
 	double val_;
 	int creatorFunct_;
 	string name_;
-	friend class ArithmeticOperation;
+	friend class PlusOperation;
+	friend class PowOperation;
+	friend class EqualsOperation;
+	friend class TimesOperation;
 	friend class Machine;
 public:
 	Token(string name, double val, int creator);

@@ -11,9 +11,9 @@ public:
 private:
 	Machine() {};
 	static Machine* instance_;
-	vector<ArithmeticOperation> waiting_;
-	vector<ArithmeticOperation> executing_;
-	vector<ArithmeticOperation> completed_;
+	vector<ArithmeticOperation*> waiting_;
+	vector<ArithmeticOperation*> executing_;
+	vector<ArithmeticOperation*> completed_;
 	vector<Token*> allTokens_;
 	int timeCounter_;
 	string fileName_;
@@ -24,10 +24,10 @@ private:
 	void moveToCompleted(int opNumber);								//
 	void readIMF(string fileName);									//
 	void readConfig();												//
-	void writeToLog(string &fileName, int operationNumber, int lag);//
+	void writeToLog(string &fileName);//
 	void writeToMem(string fileName);								//
-	bool checkIfReady(ArithmeticOperation operationToBeChecked);	//
+	bool checkIfReady(ArithmeticOperation* operationToBeChecked);	//
 	void checkAllIfReady();											//
-	bool checkIfFinished(ArithmeticOperation &operationToBeChecked);//
+	bool checkIfFinished(ArithmeticOperation* operationToBeChecked);//
 	void checkAllIfFinished();										//
 };			

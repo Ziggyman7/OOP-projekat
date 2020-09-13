@@ -43,7 +43,7 @@ void Compiler::compile(const string& fileIn, CompilationType compilationType) {
 	stack<string> charStack;
 	while (getline(inputFile, line)) {
 		postLine = toPostfix(line);
-		//cout << postLine<<"\n";
+		cout << postLine<<"\n";
 		
 		for (int i = 0; i < postLine.length(); i++) {
 			if (postLine[i] == ' ') continue;

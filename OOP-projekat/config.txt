@@ -2,5 +2,5 @@ Ta = 5
 Tm = 10
 Te = 20
 Tw = 40
-Nw = 2
+Nw = 1
 compilation = simple
